@@ -214,7 +214,7 @@ export interface AIMessage {
     .ai-model-badge span { font-size: 10px; color: var(--text-muted); }
 
     /* Chat */
-    .chat-area { display: flex; flex-direction: column; height: 100%; }
+    .chat-area { display: flex; flex-direction: column; height: 100%; min-height: 0; overflow: hidden; }
     .chat-header {
       padding: 16px 20px;
       border-bottom: 1px solid var(--border);

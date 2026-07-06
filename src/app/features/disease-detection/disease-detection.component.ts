@@ -45,10 +45,11 @@ export interface DetectionResult {
                 <h3>Upload Crop Photo</h3>
                 <p>Drag & drop an image or click to browse<br>JPG, PNG, WEBP supported (max 10MB)</p>
                 <div class="upload-btn-group">
-                  <button class="btn btn-primary btn-lg" (click)="simulateUpload()">
+                  <input type="file" #fileInput style="display: none" accept="image/*" (change)="onFileSelected($event)" />
+                  <button class="btn btn-primary btn-lg" (click)="fileInput.click()">
                     <mat-icon>upload</mat-icon> Choose File
                   </button>
-                  <button class="btn btn-outline btn-lg" (click)="simulateUpload()">
+                  <button class="btn btn-outline btn-lg" (click)="fileInput.click()">
                     <mat-icon>camera_alt</mat-icon> Use Camera
                   </button>
                 </div>
@@ -482,7 +483,16 @@ export class DiseaseDetectionComponent implements OnInit {
   onDrop(e: DragEvent) {
     e.preventDefault();
     this.dragOver.set(false);
-    this.simulateUpload();
+    if (e.dataTransfer?.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          this.uploadedImage.set(event.target?.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
   }
 
   severityBadge(s: string) {

@@ -172,14 +172,98 @@ export class AppStateService {
 
   async loadWeather() {
     try {
-      const response = await fetch(`${environment.supabaseUrl}/functions/v1/weather`);
+      let lat = -23.9;
+      let lon = 29.4;
+      let locationName = 'Limpopo Farm';
+
+      try {
+        const pos = await new Promise<GeolocationPosition>((resolve, reject) => {
+          if (!navigator.geolocation) { reject('No geolocation'); }
+          navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3000 });
+        });
+        lat = pos.coords.latitude;
+        lon = pos.coords.longitude;
+        locationName = 'Current Location';
+      } catch (e) {
+        console.warn('Geolocation failed, using default location.');
+      }
+
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max&timezone=auto`;
+      const response = await fetch(url);
+      
       if (response.ok) {
         const data = await response.json();
-        this.weather.set(data);
+        
+        const mapWMO = (code: number, isDay: boolean = true) => {
+          if (code === 0) return { condition: 'Clear', icon: isDay ? 'wb_sunny' : 'bedtime' };
+          if (code === 1 || code === 2) return { condition: 'Partly Cloudy', icon: isDay ? 'partly_cloudy_day' : 'cloud' };
+          if (code === 3) return { condition: 'Overcast', icon: 'cloud' };
+          if (code === 45 || code === 48) return { condition: 'Fog', icon: 'foggy' };
+          if (code >= 51 && code <= 57) return { condition: 'Drizzle', icon: 'grain' };
+          if (code >= 61 && code <= 67) return { condition: 'Rain', icon: 'water_drop' };
+          if (code >= 71 && code <= 77) return { condition: 'Snow', icon: 'ac_unit' };
+          if (code >= 80 && code <= 82) return { condition: 'Showers', icon: 'rainy' };
+          if (code >= 85 && code <= 86) return { condition: 'Snow Showers', icon: 'ac_unit' };
+          if (code >= 95) return { condition: 'Thunderstorm', icon: 'thunderstorm' };
+          return { condition: 'Unknown', icon: 'cloud' };
+        };
+
+        const currentWmo = mapWMO(data.current.weather_code, data.current.is_day === 1);
+        const forecastDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        
+        const forecast: WeatherForecast[] = data.daily.time.slice(0, 7).map((t: string, i: number) => {
+          const date = new Date(t);
+          const dayName = i === 0 ? 'Today' : forecastDays[date.getDay()];
+          const fWmo = mapWMO(data.daily.weather_code[i], true);
+          return {
+            day: dayName,
+            high: Math.round(data.daily.temperature_2m_max[i]),
+            low: Math.round(data.daily.temperature_2m_min[i]),
+            condition: fWmo.condition,
+            icon: fWmo.icon,
+            rain: data.daily.precipitation_probability_max[i]
+          };
+        });
+
+        this.weather.set({
+          location: locationName,
+          temperature: Math.round(data.current.temperature_2m),
+          feelsLike: Math.round(data.current.apparent_temperature),
+          humidity: data.current.relative_humidity_2m,
+          windSpeed: Math.round(data.current.wind_speed_10m),
+          condition: currentWmo.condition,
+          icon: currentWmo.icon,
+          uvIndex: Math.round(data.daily.uv_index_max[0] || 8),
+          rainfall: data.current.precipitation,
+          forecast: forecast
+        });
+        return;
       }
     } catch (error) {
-      console.error('Error loading weather:', error);
+      console.error('Error loading weather from Open-Meteo:', error);
     }
+
+    // Fallback to mock data if API fails or is not available
+    this.weather.set({
+      location: 'Limpopo Farm',
+      temperature: 28,
+      feelsLike: 31,
+      humidity: 62,
+      windSpeed: 14,
+      condition: 'Partly Cloudy',
+      icon: 'partly_cloudy_day',
+      uvIndex: 8,
+      rainfall: 0,
+      forecast: [
+        { day: 'Mon', high: 28, low: 18, condition: 'Partly Cloudy', icon: 'partly_cloudy_day', rain: 10 },
+        { day: 'Tue', high: 29, low: 19, condition: 'Sunny', icon: 'wb_sunny', rain: 0 },
+        { day: 'Wed', high: 31, low: 20, condition: 'Sunny', icon: 'wb_sunny', rain: 5 },
+        { day: 'Thu', high: 26, low: 18, condition: 'Heavy Rain', icon: 'thunderstorm', rain: 85 },
+        { day: 'Fri', high: 25, low: 17, condition: 'Rain', icon: 'water_drop', rain: 65 },
+        { day: 'Sat', high: 27, low: 18, condition: 'Sunny', icon: 'wb_sunny', rain: 10 },
+        { day: 'Sun', high: 28, low: 18, condition: 'Sunny', icon: 'wb_sunny', rain: 0 }
+      ]
+    });
   }
 
   async fetchPricesFromAPI() {

@@ -16,7 +16,7 @@ import { signal } from '@angular/core';
         </div>
         <div class="period-select">
           @for (p of periods; track p) {
-            <button class="chip" [class.active]="period() === p" (click)="period.set(p)">{{ p }}</button>
+            <button class="chip" [class.active]="period() === p" (click)="setPeriod(p)">{{ p }}</button>
           }
         </div>
       </div>
@@ -53,8 +53,8 @@ import { signal } from '@angular/core';
             @for (m of monthlyFinancial; track m.month) {
               <div class="bar-group">
                 <div class="bars">
-                  <div class="bar revenue" [style.height]="(m.revenue / 15000 * 120) + 'px'" [title]="'Revenue: R' + m.revenue.toLocaleString()"></div>
-                  <div class="bar expense" [style.height]="(m.expense / 15000 * 120) + 'px'" [title]="'Expenses: R' + m.expense.toLocaleString()"></div>
+                  <div class="bar revenue" [style.height]="(m.revenue / maxFinancial * 120) + 'px'" [title]="'Revenue: R' + m.revenue.toLocaleString()"></div>
+                  <div class="bar expense" [style.height]="(m.expense / maxFinancial * 120) + 'px'" [title]="'Expenses: R' + m.expense.toLocaleString()"></div>
                 </div>
                 <span class="bar-label">{{ m.month }}</span>
               </div>
@@ -93,7 +93,7 @@ import { signal } from '@angular/core';
             @for (w of waterUsage; track w.month) {
               <div class="line-col">
                 <div class="line-bar-outer">
-                  <div class="line-bar-inner" [style.height]="(w.used / 500 * 100) + '%'"></div>
+                  <div class="line-bar-inner" [style.height]="(w.used / maxWater * 100) + '%'"></div>
                 </div>
                 <span class="bar-label">{{ w.month }}</span>
               </div>
@@ -192,6 +192,9 @@ export class AnalyticsComponent {
   periods = ['This Week', 'This Month', 'This Season', 'This Year'];
   Math = Math;
 
+  maxFinancial = 15000;
+  maxWater = 500;
+
   kpis = [
     { label: 'Total Revenue', value: 'R 43,090', trend: 18, sparkline: [10, 14, 9, 16, 12, 18, 15, 20, 22] },
     { label: 'Total Expenses', value: 'R 24,850', trend: -5, sparkline: [12, 11, 15, 13, 11, 10, 9, 11, 10] },
@@ -229,6 +232,60 @@ export class AnalyticsComponent {
     { name: 'Fall Armyworm', pct: 15, color: '#EC4899' },
     { name: 'Other', pct: 5, color: '#9CA3AF' },
   ];
+
+  setPeriod(p: string) {
+    this.period.set(p);
+    
+    // Scale data based on period
+    const mult = p === 'This Week' ? 0.05 : p === 'This Month' ? 0.25 : p === 'This Season' ? 1 : 3.5;
+    
+    this.maxFinancial = 15000 * mult;
+    this.maxWater = 500 * mult;
+
+    this.kpis = [
+      { label: 'Total Revenue', value: 'R ' + (43090 * mult).toLocaleString(undefined, {maximumFractionDigits:0}), trend: p === 'This Week' ? 2 : p === 'This Year' ? 32 : 18, sparkline: Array.from({length: 9}, () => Math.floor(Math.random() * 15) + 5) },
+      { label: 'Total Expenses', value: 'R ' + (24850 * mult).toLocaleString(undefined, {maximumFractionDigits:0}), trend: p === 'This Week' ? 1 : -5, sparkline: Array.from({length: 9}, () => Math.floor(Math.random() * 15) + 5) },
+      { label: 'Avg Yield', value: (5.8).toLocaleString() + ' t/ha', trend: p === 'This Week' ? 0 : 21, sparkline: Array.from({length: 9}, () => Math.floor(Math.random() * 10) + 2) },
+      { label: 'Farm Health', value: Math.floor(80 + Math.random() * 15) + '%', trend: Math.floor(Math.random() * 10) - 2, sparkline: Array.from({length: 9}, () => Math.floor(Math.random() * 20) + 70) },
+    ];
+
+    this.monthlyFinancial = [
+      { month: 'Nov', revenue: 2000 * mult, expense: 4200 * mult },
+      { month: 'Dec', revenue: 4500 * mult, expense: 3800 * mult },
+      { month: 'Jan', revenue: 7200 * mult, expense: 5100 * mult },
+      { month: 'Feb', revenue: 9800 * mult, expense: 4600 * mult },
+      { month: 'Mar', revenue: 12400 * mult, expense: 4100 * mult },
+      { month: 'Apr', revenue: 8100 * mult, expense: 3050 * mult },
+    ];
+
+    this.cropPerformance = [
+      { name: 'Tomatoes', score: Math.floor(75 + Math.random() * 20) },
+      { name: 'Groundnuts', score: Math.floor(70 + Math.random() * 20) },
+      { name: 'Maize', score: Math.floor(65 + Math.random() * 20) },
+      { name: 'Cassava', score: Math.floor(60 + Math.random() * 20) },
+      { name: 'Beans', score: Math.floor(55 + Math.random() * 20) },
+      { name: 'Spinach', score: Math.floor(50 + Math.random() * 20) },
+    ].sort((a,b) => b.score - a.score);
+
+    this.waterUsage = [
+      { month: 'Nov', used: 120 * mult }, { month: 'Dec', used: 180 * mult }, { month: 'Jan', used: 320 * mult },
+      { month: 'Feb', used: 460 * mult }, { month: 'Mar', used: 380 * mult }, { month: 'Apr', used: 240 * mult },
+    ];
+
+    const diseases = ['Northern Corn Leaf Blight', 'Early Blight (Tomatoes)', 'Powdery Mildew', 'Fall Armyworm', 'Spider Mites', 'Rust', 'Aphids'];
+    const colors = ['#EF4444', '#F59E0B', '#8B5CF6', '#EC4899', '#10B981', '#3B82F6', '#14B8A6'];
+    const shuffled = diseases.sort(() => 0.5 - Math.random()).slice(0, 4);
+    let rem = 100;
+    this.diseaseStats = shuffled.map((name, i) => {
+      const pct = i === 3 ? rem : Math.floor(Math.random() * 20) + 10;
+      rem -= pct;
+      return { name, pct, color: colors[i] };
+    });
+    if (rem > 0) {
+      this.diseaseStats.push({ name: 'Other', pct: rem, color: '#9CA3AF' });
+    }
+    this.diseaseStats.sort((a,b) => b.pct - a.pct);
+  }
 
   aiInsights = [
     { icon: 'trending_up', color: '#4CAF50', title: 'Revenue Growth Opportunity', text: 'Shifting 1ha from maize to tomatoes could increase revenue by R 12,000 per season based on current market prices.' },
