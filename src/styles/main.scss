@@ -1,0 +1,28 @@
+// =============================================
+// HarvestAI Africa — Main SCSS Entry
+// 7-1 Architecture Pattern
+// =============================================
+
+// ---------- Abstracts ----------
+@use 'abstracts/variables';
+@use 'abstracts/mixins';
+@use 'abstracts/functions';
+
+// ---------- Themes ----------
+@use 'themes/theme';
+
+// ---------- Base ----------
+@use 'base/reset';
+@use 'base/typography';
+@use 'base/globals';
+
+// ---------- Components ----------
+@use 'components/buttons';
+@use 'components/cards';
+@use 'components/forms';
+@use 'components/tables';
+
+// ---------- Layout ----------
+@use 'layout/sidebar';
+@use 'layout/navbar';
+@use 'layout/footer';

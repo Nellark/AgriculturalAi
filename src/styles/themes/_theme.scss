@@ -1,0 +1,72 @@
+// =============================================
+// AgriGrow Africa — Design System Theme
+// =============================================
+
+:root {
+  // Brand
+  --primary: #1B4332;
+  --primary-mid: #2E7D32;
+  --primary-light: #4CAF50;
+  --primary-pale: #E8F4E9;
+
+  // Accent
+  --accent: #81C784;
+  --accent-dark: #4CAF50;
+
+  // Backgrounds
+  --bg: #F5F8F5;
+  --bg-card: #FFFFFF;
+  --bg-subtle: #F0F5F0;
+  --bg-green: #E8F4E9;
+
+  // Borders
+  --border: #E2EAE2;
+  --border-light: #EDF3ED;
+
+  // Text
+  --text-primary: #0D1F11;
+  --text-secondary: #556B5A;
+  --text-muted: #8FA090;
+
+  // Semantic
+  --success: #2E7D32;
+  --warning: #F59E0B;
+  --danger: #DC2626;
+  --info: #2563EB;
+
+  // Shadows
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow: 0 4px 16px rgba(0,0,0,0.07), 0 2px 6px rgba(0,0,0,0.04);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.05);
+  --shadow-hover: 0 8px 32px rgba(27,67,50,0.18), 0 4px 12px rgba(0,0,0,0.06);
+
+  // Radii
+  --radius-sm: 10px;
+  --radius: 16px;
+  --radius-md: 20px;
+  --radius-lg: 24px;
+
+  // Layout
+  --sidebar-width: 256px;
+  --topbar-height: 64px;
+
+  // Transitions
+  --transition: 0.18s cubic-bezier(0.4,0,0.2,1);
+  --transition-slow: 0.32s cubic-bezier(0.4,0,0.2,1);
+}
+
+.dark-theme {
+  --bg: #0A150D;
+  --bg-card: #111F14;
+  --bg-subtle: #152019;
+  --border: #1E3323;
+  --border-light: #192B1E;
+  --text-primary: #ECF3EC;
+  --text-secondary: #7FAB85;
+  --text-muted: #4F7556;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.4);
+  --shadow: 0 4px 16px rgba(0,0,0,0.35);
+  --shadow-lg: 0 10px 40px rgba(0,0,0,0.5);
+  --bg-green: rgba(27,67,50,0.3);
+  --primary-pale: rgba(27,67,50,0.3);
+}

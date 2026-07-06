@@ -1,0 +1,61 @@
+// =============================================
+// HarvestAI Africa — Design Tokens
+// =============================================
+
+// ---------- Color Ramps ----------
+$primary: #2E7D32;
+$primary-dark: #1B4332;
+$primary-light: #4CAF50;
+$accent: #C8E36A;
+$accent-dark: #A8C43A;
+
+$success: #4CAF50;
+$warning: #F59E0B;
+$danger: #EF4444;
+$info: #3B82F6;
+
+// ---------- Neutrals ----------
+$bg: #F8F9F5;
+$bg-card: #FFFFFF;
+$bg-subtle: #F1F5F1;
+$border: #E5E7EB;
+$border-light: #F3F4F6;
+$text-primary: #1F2937;
+$text-secondary: #6B7280;
+$text-muted: #9CA3AF;
+
+// ---------- Dark Theme ----------
+$bg-dark: #0F1A12;
+$bg-card-dark: #1A2B1E;
+$bg-subtle-dark: #162419;
+$border-dark: #2D3F32;
+$border-light-dark: #243329;
+$text-primary-dark: #F0F4F0;
+$text-secondary-dark: #9AB09D;
+$text-muted-dark: #6B8570;
+
+// ---------- Shadows ----------
+$shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+$shadow: 0 4px 16px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+$shadow-lg: 0 10px 40px rgba(0,0,0,0.12), 0 4px 16px rgba(0,0,0,0.06);
+$shadow-hover: 0 8px 32px rgba(46,125,50,0.15), 0 4px 16px rgba(0,0,0,0.06);
+
+// ---------- Radii ----------
+$radius-sm: 8px;
+$radius: 16px;
+$radius-md: 20px;
+$radius-lg: 24px;
+
+// ---------- Layout ----------
+$sidebar-width: 260px;
+$topbar-height: 64px;
+
+// ---------- Transitions ----------
+$transition: 0.2s cubic-bezier(0.4,0,0.2,1);
+$transition-slow: 0.35s cubic-bezier(0.4,0,0.2,1);
+
+// ---------- Breakpoints ----------
+$bp-sm: 480px;
+$bp-md: 768px;
+$bp-lg: 1024px;
+$bp-xl: 1280px;

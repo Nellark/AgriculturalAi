@@ -1,0 +1,37 @@
+// =============================================
+// HarvestAI Africa — Mixins
+// =============================================
+
+@mixin respond-to($bp) {
+  @if $bp == sm {
+    @media (max-width: 480px) { @content; }
+  } @else if $bp == md {
+    @media (max-width: 768px) { @content; }
+  } @else if $bp == lg {
+    @media (max-width: 1024px) { @content; }
+  } @else if $bp == xl {
+    @media (max-width: 1280px) { @content; }
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin card-hover {
+  transition: box-shadow $transition, transform $transition, border-color $transition;
+  &:hover {
+    box-shadow: $shadow-hover;
+    transform: translateY(-2px);
+    border-color: $border;
+  }
+}
+
+@mixin scrollbar {
+  &::-webkit-scrollbar { width: 6px; height: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: $border; border-radius: 99px; }
+  &::-webkit-scrollbar-thumb:hover { background: $text-muted; }
+}

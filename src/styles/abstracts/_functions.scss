@@ -1,0 +1,15 @@
+// =============================================
+// HarvestAI Africa — Functions
+// =============================================
+
+@function rem($px) {
+  @return ($px / 16px) * 1rem;
+}
+
+@function shade($color, $percentage) {
+  @return mix(black, $color, $percentage);
+}
+
+@function tint($color, $percentage) {
+  @return mix(white, $color, $percentage);
+}
